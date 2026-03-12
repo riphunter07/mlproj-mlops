@@ -24,3 +24,4 @@ models/
 mlruns/
 mlflow.db
 
+/models

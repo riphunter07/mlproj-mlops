@@ -18,4 +18,5 @@ stages:
     deps:
     - data/processed/features_sales.csv
     - src/train_model.py
-
+    outs:
+    - models
