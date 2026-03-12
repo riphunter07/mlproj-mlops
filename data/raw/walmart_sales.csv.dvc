@@ -1,0 +1,5 @@
+outs:
+- md5: 9e719933af96a09e97deea2cc468ce1f
+  size: 363732
+  hash: md5
+  path: walmart_sales.csv
