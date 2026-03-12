@@ -1,0 +1,23 @@
+data:
+  raw_data_path: data/raw/walmart_sales.csv
+  clean_data_path: data/processed/clean_sales.csv
+  feature_data_path: data/processed/features_sales.csv
+
+training:
+  test_size: 0.2
+  random_state: 42
+
+models:
+
+  linear_regression:
+    enabled: true
+
+  random_forest:
+    enabled: true
+    n_estimators: 100
+    max_depth: 10
+
+  gradient_boosting:
+    enabled: true
+    n_estimators: 100
+    learning_rate: 0.1

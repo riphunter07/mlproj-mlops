@@ -6,8 +6,12 @@ from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
 
 from sklearn.metrics import mean_absolute_error, mean_squared_error
 
+from config_loader import load_config
+
 import mlflow
 import mlflow.sklearn
+
+config = load_config()
 
 mlflow.set_experiment("retail_demand_forecasting")
 
@@ -64,23 +68,33 @@ def prepare_features(train, test):
     return X_train, X_test, y_train, y_test
 
 
-def train_models(X_train, y_train):
+def train_models(X_train, y_train, config):
 
     models = {}
 
-    models["linear_regression"] = LinearRegression()
+    if config["models"]["linear_regression"]["enabled"]:
 
-    models["random_forest"] = RandomForestRegressor(
-        n_estimators=100,
-        max_depth=10,
-        random_state=42
-    )
+        models["linear_regression"] = LinearRegression()
 
-    models["gradient_boosting"] = GradientBoostingRegressor(
-        n_estimators=100,
-        learning_rate=0.1,
-        random_state=42
-    )
+    if config["models"]["random_forest"]["enabled"]:
+
+        params = config["models"]["random_forest"]
+
+        models["random_forest"] = RandomForestRegressor(
+            n_estimators=params["n_estimators"],
+            max_depth=params["max_depth"],
+            random_state=config["training"]["random_state"]
+        )
+
+    if config["models"]["gradient_boosting"]["enabled"]:
+
+        params = config["models"]["gradient_boosting"]
+
+        models["gradient_boosting"] = GradientBoostingRegressor(
+            n_estimators=params["n_estimators"],
+            learning_rate=params["learning_rate"],
+            random_state=config["training"]["random_state"]
+        )
 
     trained_models = {}
 
@@ -93,7 +107,7 @@ def train_models(X_train, y_train):
     return trained_models
 
 
-def evaluate_models(models, X_test, y_test):
+def evaluate_models(models, X_test, y_test,config):
 
     results = {}
 
@@ -112,6 +126,8 @@ def evaluate_models(models, X_test, y_test):
             mlflow.log_metric("RMSE", rmse)
 
             mlflow.sklearn.log_model(model, name)
+
+            mlflow.log_params(config["models"].get(name, {}))
 
             results[name] = {
                 "MAE": mae,
@@ -149,7 +165,7 @@ def save_model(model, name):
 
 if __name__ == "__main__":
 
-    data_path = "data/processed/features_sales.csv"
+    data_path = config["data"]["feature_data_path"]
 
     df = load_data(data_path)
 
@@ -157,9 +173,9 @@ if __name__ == "__main__":
 
     X_train, X_test, y_train, y_test = prepare_features(train, test)
 
-    models = train_models(X_train, y_train)
+    models = train_models(X_train, y_train,config)
 
-    results = evaluate_models(models, X_test, y_test)
+    results = evaluate_models(models, X_test, y_test,config)
 
     best_name, best_model = select_best_model(models, results)
 
