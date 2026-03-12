@@ -1,0 +1,21 @@
+stages:
+  data_processing:
+    cmd: python src/data_processing.py
+    deps:
+    - data/raw/walmart_sales.csv
+    - src/data_processing.py
+    outs:
+    - data/processed/clean_sales.csv
+  feature_engineering:
+    cmd: python src/feature_engineering.py
+    deps:
+    - data/processed/clean_sales.csv
+    - src/feature_engineering.py
+    outs:
+    - data/processed/features_sales.csv
+  train_model:
+    cmd: python src/train_model.py
+    deps:
+    - data/processed/features_sales.csv
+    - src/train_model.py
+

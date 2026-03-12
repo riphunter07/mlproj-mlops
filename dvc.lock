@@ -1,0 +1,45 @@
+schema: '2.0'
+stages:
+  data_processing:
+    cmd: python src/data_processing.py
+    deps:
+    - path: data/raw/walmart_sales.csv
+      hash: md5
+      md5: 9e719933af96a09e97deea2cc468ce1f
+      size: 363732
+    - path: src/data_processing.py
+      hash: md5
+      md5: 193c94d2ab73fa10af8ff68c6e7abfd5
+      size: 917
+    outs:
+    - path: data/processed/clean_sales.csv
+      hash: md5
+      md5: 368f158e9c62c19baba21ce388fa6906
+      size: 426473
+  feature_engineering:
+    cmd: python src/feature_engineering.py
+    deps:
+    - path: data/processed/clean_sales.csv
+      hash: md5
+      md5: 368f158e9c62c19baba21ce388fa6906
+      size: 426473
+    - path: src/feature_engineering.py
+      hash: md5
+      md5: 6d8d146631251435f4e5b47ee4c9881f
+      size: 1560
+    outs:
+    - path: data/processed/features_sales.csv
+      hash: md5
+      md5: 9d48bf09c1a23adc7e2ab3c93a4d67c4
+      size: 849250
+  train_model:
+    cmd: python src/train_model.py
+    deps:
+    - path: data/processed/features_sales.csv
+      hash: md5
+      md5: 9d48bf09c1a23adc7e2ab3c93a4d67c4
+      size: 849250
+    - path: src/train_model.py
+      hash: md5
+      md5: fd90a57983df42e3e170af3f372ef924
+      size: 4003

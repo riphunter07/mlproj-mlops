@@ -153,14 +153,16 @@ def select_best_model(models, results):
     return best_model_name, best_model
 
 
-def save_model(model, name):
+# def save_model(model, name):
 
-    path = f"models/{name}.pkl"
+#     os.makedirs("models", exist_ok=True)
+    
+#     path = f"models/{name}.pkl"
 
-    with open(path, "wb") as f:
-        pickle.dump(model, f)
+#     with open(path, "wb") as f:
+#         pickle.dump(model, f)
 
-    print("Model saved:", path)
+#     print("Model saved:", path)
 
 
 if __name__ == "__main__":
@@ -179,4 +181,4 @@ if __name__ == "__main__":
 
     best_name, best_model = select_best_model(models, results)
 
-    save_model(best_model, best_name)
+    # save_model(best_model, best_name)
