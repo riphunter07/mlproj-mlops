@@ -6,6 +6,11 @@ from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
 
 from sklearn.metrics import mean_absolute_error, mean_squared_error
 
+import mlflow
+import mlflow.sklearn
+
+mlflow.set_experiment("retail_demand_forecasting")
+
 
 def load_data(path):
 
@@ -94,21 +99,30 @@ def evaluate_models(models, X_test, y_test):
 
     for name, model in models.items():
 
-        preds = model.predict(X_test)
+        with mlflow.start_run(run_name=name):
 
-        mae = mean_absolute_error(y_test, preds)
-        rmse = mean_squared_error(y_test, preds)**0.5
+            preds = model.predict(X_test)
 
-        results[name] = {
-            "MAE": mae,
-            "RMSE": rmse
-        }
+            mae = mean_absolute_error(y_test, preds)
+            rmse = mean_squared_error(y_test, preds)**0.5
 
-        print(name)
-        print("MAE:", mae)
-        print("RMSE:", rmse)
-        print("---------------")
+            mlflow.log_param("model", name)
 
+            mlflow.log_metric("MAE", mae)
+            mlflow.log_metric("RMSE", rmse)
+
+            mlflow.sklearn.log_model(model, name)
+
+            results[name] = {
+                "MAE": mae,
+                "RMSE": rmse
+            }
+
+            print(name)
+            print("MAE:", mae)
+            print("RMSE:", rmse)
+            print("---------------")
+            
     return results
 
 

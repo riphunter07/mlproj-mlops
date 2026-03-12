@@ -17,3 +17,7 @@ models/
 
 # Environment variables
 .env
+
+# mlflow
+mlruns/
+mlflow.db
