@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: retail-ml-deployment
+
+spec:
+  replicas: 2
+
+  selector:
+    matchLabels:
+      app: retail-ml-api
+
+  template:
+    metadata:
+      labels:
+        app: retail-ml-api
+
+    spec:
+      containers:
+      - name: retail-ml-container
+        image: retail-ml-api
+        imagePullPolicy: Never
+
+        ports:
+        - containerPort: 8000
