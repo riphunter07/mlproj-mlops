@@ -1,0 +1,35 @@
+name: ML Pipeline
+
+on:
+  push:
+    branches:
+      - dev
+      - main
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11-slim"
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Install DVC
+        run: |
+          pip install dvc
+
+      - name: Run DVC pipeline
+        run: |
+          dvc repro
